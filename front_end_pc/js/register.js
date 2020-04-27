@@ -163,24 +163,29 @@ var vm = new Vue({
                 withCredentials:true,
             })
                 .then(response => {
-                    // 表示后端发送短信成功
-                    // 倒计时60秒，60秒后允许用户再次点击发送短信验证码的按钮
-                    var num = 60;
-                    // 设置一个计时器
-                    var t = setInterval(() => {
-                        if (num == 1) {
-                            // 如果计时器到最后, 清除计时器对象
-                            clearInterval(t);
-                            // 将点击获取验证码的按钮展示的文本回复成原始文本
-                            this.sms_code_tip = '获取短信验证码';
-                            // 将点击按钮的onclick事件函数恢复回去
-                            this.sending_flag = false;
-                        } else {
-                            num -= 1;
-                            // 展示倒计时信息
-                            this.sms_code_tip = num + '秒';
-                        }
-                    }, 1000, 60)
+                    if (response.data.code == 0) {
+
+                        // 表示后端发送短信成功
+                        // 倒计时60秒，60秒后允许用户再次点击发送短信验证码的按钮
+                        var num = 60;
+                        // 设置一个计时器
+                        var t = setInterval(() => {
+                            if (num == 1) {
+                                // 如果计时器到最后, 清除计时器对象
+                                clearInterval(t);
+                                // 将点击获取验证码的按钮展示的文本回复成原始文本
+                                this.sms_code_tip = '获取短信验证码';
+                                // 将点击按钮的onclick事件函数恢复回去
+                                this.sending_flag = false;
+                            } else {
+                                num -= 1;
+                                // 展示倒计时信息
+                                this.sms_code_tip = num + '秒';
+                            }
+                        }, 1000, 60)
+                    } else if (response.data.code = 400) {
+                        alert('出错了', response.data.errmsg)
+                    }
                 })
                 .catch(error => {
                     if (error.response.status == 400) {

@@ -85,7 +85,7 @@ var vm = new Vue({
             }
 
             // 进行前端页面请求:
-            var url = this.host + '/emails/'
+            var url = this.host + '/email/'
             axios.put(url,
                 {
                     email: this.email
