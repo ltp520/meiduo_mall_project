@@ -1,5 +1,8 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from itsdangerous import TimedJSONWebSignatureSerializer, BadData
+
 
 # Create your models here.
 
@@ -18,3 +21,34 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def generate_verify_email_url(self):
+
+        obj = TimedJSONWebSignatureSerializer(settings.SECRET_KEY,
+                                              expires_in=3600 * 24)
+        dict = {'user_id': self.id,
+                'email': self.email}
+
+        result = settings.EMAIL_VERIFY_URL + obj.dumps(dict).decode()
+
+        return result
+
+    def check_verify_email_token(token):
+        obj = TimedJSONWebSignatureSerializer(settings.SECRET_KEY,
+                                              expires_in=3600 * 24)
+        try:
+            dict = obj.loads(token)
+        except BadData:
+            return None
+        else:
+            user_id = dict.get('user_id')
+            email = dict['email']
+
+        try:
+            user = User.objects.get(id=user_id,
+                                    email=email)
+        except User.DoesNotExist:
+            return None
+        else:
+            return user
+

@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'verifications',
     'oauth.apps.OauthConfig',
+    'areas',
 ]
 
 MIDDLEWARE = [
@@ -236,3 +237,5 @@ EMAIL_HOST_USER = 'ltp939596@163.com'
 EMAIL_HOST_PASSWORD = 'POXGZZOYBJNDXMEP'
 # 收件人看到的发件人
 EMAIL_FROM = '柳老板<ltp939596@163.com>'
+# 收件人收到的验证链接
+EMAIL_VERIFY_URL = 'http://www.meiduo.site:8080/success_verify_email.html?token='

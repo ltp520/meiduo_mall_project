@@ -1,7 +1,12 @@
 # 导入:
+
 from django.core.mail import send_mail
 from django.conf import settings
 import logging
+# import sys
+# sys.path.insert(0, 'meiduo_mall')
+
+
 logger = logging.getLogger('django')
 from celery_tasks.main import celery_app
 
@@ -24,5 +29,4 @@ def send_verify_email(to_email, verify_url):
                settings.EMAIL_FROM,
                [to_email],
                html_message=html_message)
-
     return result

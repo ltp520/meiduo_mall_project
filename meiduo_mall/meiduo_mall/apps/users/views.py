@@ -1,6 +1,9 @@
 import json
 import re
 import logging
+
+from celery_tasks.email.tasks import send_verify_email
+
 logger = logging.getLogger('django')
 
 from django.contrib.auth import login, authenticate, logout
@@ -222,7 +225,37 @@ class EmailView(View):
             logger.error(e)
             return JsonResponse({'code': 400,
                                  'errmsg': '添加邮箱失败'})
-
+        verify_url = request.user.generate_verify_email_url()
+        send_verify_email.delay(email, verify_url)
         # 响应添加邮箱结果
         return JsonResponse({'code': 0,
                              'errmsg': 'ok'})
+
+
+class VerifyEmailView(View):
+    """验证邮箱"""
+    def put(self, request):
+        # 获取参数
+        token = request.GET.get('token')
+        # 判断参数是否为空
+        if not token:
+            return JsonResponse({'code': 400,
+                                 'errmsg': '缺少token'})
+        # 调用User model的方法获取用户
+        user = User.check_verify_email_token(token)
+        if not user:
+            return JsonResponse({'code': 400,
+                                 'errmsg': '无效的token'})
+        # 将用户的激活值设为True
+        try:
+            user.email_active = True
+            user.save()
+        except Exception as e:
+            logger.error(e)
+            return JsonResponse({'code': 400,
+                                 'errmsg': '激活邮件失败'})
+
+        return JsonResponse({'code': 0,
+                             'errmsg': 'ok'})
+
+

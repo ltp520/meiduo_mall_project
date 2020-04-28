@@ -14,12 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-
+from django.urls import re_path
+from . import views
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path(r'', include('users.urls')),
-    path(r'', include('verifications.urls')),
-    path(r'', include('oauth.urls')),
-    path(r'', include('areas.urls')),
+    re_path(r'^areas/$', views.ProvinceAreasView.as_view()),
+    re_path(r'^areas/(?P<pk>[1-9]\d+)/$', views.SubAreasView.as_view()),
 ]
