@@ -87,7 +87,27 @@
                     <div class="sub_menu_con fl">
                         <h1 class="fl">商品分类</h1>
                         <ul class="sub_menu">
-                            
+                            {% for group in categories.values %}
+                            <li>
+                                <div class="level1">
+                                    {% for channel in group.channels %}
+                                    <a href="{{ channel.url }}">{{ channel.name }}</a>
+                                    {% endfor %}
+                                </div>
+                                <div class="level2">
+                                    {% for cat2 in group.sub_cats %}
+                                    <div class="list_group">
+                                        <div class="group_name fl">{{cat2.name}} &gt;</div>
+                                        <div class="group_detail fl">
+                                            {% for cat3 in cat2.sub_cats %}
+                                            <a href="/list.html?cat={{cat3.id}}">{{cat3.name}}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                            {% endfor %}
                         </ul>
                     </div>
 
@@ -102,21 +122,21 @@
             </div>
 
     <div class="breadcrumb">
-        <a href="">手机</a>
+        <a href="{{ goods.channel.url }}">{{ goods.category1.name }}</a>
         <span>></span>
-        <span>手机通讯</span>
+        <span>{{ goods.category2.name }}</span>
         <span>></span>
-        <a href="/list.html?cat=115">手机</a>
+        <a href="/list.html?cat={{ goods.category3.id }}">{{goods.category3.name }}</a>
     </div>
 
     <div class="goods_detail_con clearfix">
-        <div class="goods_detail_pic fl"><img src="http://image.meiduo.site:8888/group1/M00/00/02/CtM3BVrRZa6ANO_sAAFti6upbx40753757"></div>
+        <div class="goods_detail_pic fl"><img src="{{ sku.default_image_url }}"></div>
         <div class="goods_detail_list fr">
-            <h3>Apple iPhone 8 Plus (A1864) 256GB 金色 移动联通电信4G手机</h3>
-            <p>选【移动优惠购】新机配新卡，198优质靓号，流量不限量！</p>
+            <h3>{{ sku.name }}</h3>
+            <p>{{ sku.caption }}</p>
             <div class="prize_bar">
-                <span class="show_pirze">¥<em>7988.00</em></span><span> 市场价￥8088.00</span>
-                <a href="javascript:;" class="goods_judge">0人评价</a>
+                <span class="show_pirze">¥<em>{{ sku.price }}</em></span><span> 市场价￥{{sku.market_price}}</span>
+                <a href="javascript:;" class="goods_judge">{{ sku.comments }}人评价</a>
             </div>
             <div class="goods_num clearfix">
                 <div class="num_name fl">数 量：</div>
@@ -126,37 +146,20 @@
                     <a @click="on_minus()" class="minus fr">-</a>
                 </div>
             </div>
-            
+            {% for spec in specs %}
             <div class="type_select">
-                <label>颜色:</label>
-                
-                
-                <a href="javascript:;" class="select">金色</a>
-                
-                
-                
-                <a href="/goods/6.html">深空灰</a>
-                
-                
-                
-                <a href="/goods/8.html">银色</a>
-                
-                
+                <label>{{ spec.name }}:</label>
+                {% for option in spec.spec_options %}
+                {% if option.sku_id == sku.id %}
+                <a href="javascript:;" class="select">{{ option.value }}</a>
+                {% elif option.sku_id %}
+                <a href="/goods/{{option.sku_id}}.html">{{ option.value }}</a>
+                {% else %}
+                <a href="javascript:;">{{ option.value }}</a>
+                {% endif %}
+                {% endfor %}
             </div>
-            
-            <div class="type_select">
-                <label>内存:</label>
-                
-                
-                <a href="/goods/3.html">64GB</a>
-                
-                
-                
-                <a href="javascript:;" class="select">256GB</a>
-                
-                
-            </div>
-            
+            {% endfor %}
             <div class="total">总价：<em>[[sku_amount]]元</em></div>
             <div class="operate_btn">
                 <a @click="add_cart" class="add_cart" id="add_cart">加入购物车</a>
@@ -188,13 +191,13 @@
             <div @click="on_tab_content('detail')" class="tab_content" :class="tab_content.detail?'current':''">
                 <dl>
                     <dt>商品详情：</dt>
-                    <dd></dd>
+                    <dd>{{ goods.desc_detail|safe }}</dd>
                 </dl>
             </div>
             <div @click="on_tab_content('pack')" class="tab_content" :class="tab_content.pack?'current':''">
                 <dl>
                     <dt>规格与包装：</dt>
-                    <dd></dd>
+                    <dd>{{ goods.desc_pack|safe }}</dd>
                 </dl>
             </div>
             <div @click="on_tab_content('comment')" class="tab_content" :class="tab_content.comment?'current':''">
@@ -213,7 +216,7 @@
             <div @click="on_tab_content('service')" class="tab_content" :class="tab_content.service?'current':''">
                 <dl>
                     <dt>售后服务：</dt>
-                    <dd></dd>
+                    <dd>{{ goods.desc_service|safe }}</dd>
                 </dl>
             </div>
         </div>
@@ -234,8 +237,8 @@
     </div>
     </div>
     <script type="text/javascript">
-        var price = 7988.00;
-        var cat = 115;
+        var price = {{sku.price}};
+        var cat = {{ goods.category3.id }};
     </script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/detail.js"></script>

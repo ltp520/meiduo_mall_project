@@ -5,6 +5,8 @@ from django.views import View
 from areas.models import Area
 from django import http
 # Create your views here.
+
+
 class ProvinceAreasView(View):
     # 获取省级区域
         def get(self, request):
@@ -57,3 +59,4 @@ class SubAreasView(View):
         return JsonResponse({"code": "0",
                              "errmsg": "OK",
                              "sub_data": sub_data})
+

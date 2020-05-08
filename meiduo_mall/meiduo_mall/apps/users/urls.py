@@ -25,4 +25,11 @@ urlpatterns = [
     re_path(r'^info/$', views.UserInfoView.as_view()),
     re_path(r'^emails/$', views.EmailView.as_view()),
     re_path(r'emails/verification/', views.VerifyEmailView.as_view()),
+    re_path(r'addresses/create/', views.CreateAddressView.as_view()),
+    re_path(r'^addresses/$', views.AddressView.as_view()),
+    re_path(r'^addresses/(?P<address_id>\d+)/$', views.UpdateDestroyAddressView.as_view()),
+    re_path(r'^addresses/(?P<address_id>\d+)/default/$', views.DefaultAddressView.as_view()),
+    re_path(r'^addresses/(?P<address_id>\d+)/title/$', views.UpdateTitleAddressView.as_view()),
+    re_path(r'^password/$', views.ChangePasswordView.as_view()),
+    re_path(r'^browse_histories/$', views.UserBrowseHistory.as_view()),
 ]

@@ -14,16 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-
+from django.urls import re_path
+from . import views
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path(r'', include('users.urls')),
-    path(r'', include('verifications.urls')),
-    path(r'', include('oauth.urls')),
-    path(r'', include('areas.urls')),
-    path(r'', include('contents.urls')),
-    path(r'', include('goods.urls')),
-    path(r'', include('carts.urls')),
-    path(r'', include('orders.urls')),
+    # 购物车查询和新增和修改和删除
+    re_path(r'^carts/$', views.CartsView.as_view()),
+    # 购物车全选
+    re_path(r'^carts/selection/$', views.CartSelectAllView.as_view()),
+    # 提供商品页面右上角购物车数据
+    re_path(r'^carts/simple/$', views.CartsSimpleView.as_view()),
 ]

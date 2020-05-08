@@ -15,6 +15,7 @@ import logging
 # 2. 创建日志记录器: 导入后创建日志器才能使用
 from django_redis import get_redis_connection
 
+from carts.utils import merge_cart_cookie_to_redis
 from oauth.models import OAuthQQUser
 from oauth.utils import generate_access_token, check_access_token
 from users.models import User
@@ -94,6 +95,7 @@ class QQUserView(View):
             response.set_cookie('username',
                                 user.username,
                                 max_age=3600 * 24 * 14)
+            response = merge_cart_cookie_to_redis(request=request, user=user, response=response)
             return response
 
     def post(self, request):
@@ -178,6 +180,7 @@ class QQUserView(View):
         response.set_cookie('username',
                             user.username,
                             max_age=3600 * 24 * 14)
+        response = merge_cart_cookie_to_redis(request=request, user=user, response=response)
 
         # 9.响应
         return response
